@@ -1,0 +1,17 @@
+#include <Servo.h>
+
+#define trigPin 9
+#define echoPin 10
+Servo myservo;
+
+void setup() {
+    Serial.begin(9600);
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    myservo.attach(3);
+    myservo.write(0);
+}
+
+void loop() {
+    // Add ultrasonic sensor and servo motor control logic here.
+}

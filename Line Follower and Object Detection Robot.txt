@@ -1,0 +1,72 @@
+#include <Servo.h>
+
+#define trigPin 9
+#define echoPin 10
+#define leftIR A0
+#define rightIR A1
+#define motor1 3
+#define motor2 4
+#define motor3 5
+#define motor4 6
+
+void setup() {
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    pinMode(leftIR, INPUT);
+    pinMode(rightIR, INPUT);
+    pinMode(motor1, OUTPUT);
+    pinMode(motor2, OUTPUT);
+    pinMode(motor3, OUTPUT);
+    pinMode(motor4, OUTPUT);
+    Serial.begin(9600);
+}
+
+void loop() {
+    // Ultrasonic Sensor for Object Detection
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    long duration = pulseIn(echoPin, HIGH);
+    long distance = duration * 0.034 / 2;
+
+    if (distance < 15) {
+        // Stop motors if obstacle detected within 15 cm
+        digitalWrite(motor1, LOW);
+        digitalWrite(motor2, LOW);
+        digitalWrite(motor3, LOW);
+        digitalWrite(motor4, LOW);
+    } else {
+        // Line Following Logic using IR Sensors
+        int leftStatus = digitalRead(leftIR);
+        int rightStatus = digitalRead(rightIR);
+
+        if (leftStatus == LOW && rightStatus == HIGH) {
+            // Turn right
+            digitalWrite(motor1, LOW);
+            digitalWrite(motor2, HIGH);
+            digitalWrite(motor3, HIGH);
+            digitalWrite(motor4, LOW);
+        } else if (leftStatus == HIGH && rightStatus == LOW) {
+            // Turn left
+            digitalWrite(motor1, HIGH);
+            digitalWrite(motor2, LOW);
+            digitalWrite(motor3, LOW);
+            digitalWrite(motor4, HIGH);
+        } else if (leftStatus == HIGH && rightStatus == HIGH) {
+            // Move forward
+            digitalWrite(motor1, HIGH);
+            digitalWrite(motor2, LOW);
+            digitalWrite(motor3, HIGH);
+            digitalWrite(motor4, LOW);
+        } else {
+            // Stop if no line detected
+            digitalWrite(motor1, LOW);
+            digitalWrite(motor2, LOW);
+            digitalWrite(motor3, LOW);
+            digitalWrite(motor4, LOW);
+        }
+    }
+    delay(100);
+}
